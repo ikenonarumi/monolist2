@@ -23,7 +23,6 @@ class OwnershipsController < ApplicationController
     end
 
     # TODO ユーザにwant or haveを設定する
-      @item = Item.find(params[:item_id])
     # params[:type]の値にHaveボタンが押された時には「Have」,
       if params[:type] == 'Have'
         current_user.have(@item)
