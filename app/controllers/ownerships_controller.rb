@@ -11,7 +11,7 @@ class OwnershipsController < ApplicationController
     # itemsテーブルに存在しない場合は楽天のデータを登録する。
     if @item.new_record?
       # TODO 商品情報の取得 RakutenWebService::Ichiba::Item.search を用いてください
-      items = {}
+      items = RakutenWebService::Ichiba::Item.search(itemCode: @item.item_code)
 
       item                  = items.first
       @item.title           = item['itemName']
@@ -24,17 +24,25 @@ class OwnershipsController < ApplicationController
 
     # TODO ユーザにwant or haveを設定する
     # params[:type]の値にHaveボタンが押された時には「Have」,
+      if params[:type] == 'Have'
+        current_user.have(@item)
     # Wantボタンが押された時には「Want」が設定されています。
-    
-
+      elsif
+        params[:type] == 'Want'
+        current_user.want(@item)
+      end
   end
 
-  def destroy
-    @item = Item.find(params[:item_id])
-
-    # TODO 紐付けの解除。 
+    # TODO 紐付けの解除。
+    def destroy
+      @item = Item.find(params[:item_id])
     # params[:type]の値にHave itボタンが押された時には「Have」,
+      if params[:type] == 'Have'
+        current_user.unhave(@item)
     # Want itボタンが押された時には「Want」が設定されています。
-
-  end
+      elsif
+        params[:type] == 'Want'
+        current_user.unwant(@item)
+      end
+    end
 end
